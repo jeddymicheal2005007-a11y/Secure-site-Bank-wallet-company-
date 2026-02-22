@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BankWallet App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background-color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        /* Bank Icon */
+        .bank-icon-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .bank-icon {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+            border-radius: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(22, 163, 74, 0.3);
+        }
+
+        .bank-icon svg {
+            width: 55%;
+            height: 55%;
+        }
+
+        /* Title */
+        .app-title {
+            font-size: 42px;
+            font-weight: 800;
+            color: #000;
+            text-align: center;
+            margin-bottom: 5px;
+            letter-spacing: -1px;
+        }
+
+        .pro-badge {
+            font-size: 18px;
+            font-weight: 600;
+            color: #6b7280;
+            text-align: center;
+            margin-bottom: 25px;
+            letter-spacing: 2px;
+        }
+
+        /* Description */
+        .description {
+            font-size: 18px;
+            color: #6b7280;
+            text-align: center;
+            line-height: 1.6;
+            max-width: 400px;
+            margin-bottom: 50px;
+            font-weight: 500;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            width: 100%;
+            max-width: 320px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            margin-bottom: 60px;
+        }
+
+        .action-btn {
+            background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+            border: none;
+            border-radius: 50px;
+            padding: 18px 30px;
+            color: #fff;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(22, 163, 74, 0.3);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(22, 163, 74, 0.4);
+        }
+
+        .action-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Footer */
+        .footer {
+            font-size: 14px;
+            color: #9ca3af;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .footer strong {
+            color: #6b7280;
+        }
+
+        /* Modal Overlay */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        .modal-container {
+            background-color: #fff;
+            border-radius: 20px;
+            padding: 35px 25px;
+            text-align: center;
+            max-width: 350px;
+            width: 90%;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            animation: aggressiveSlideDown 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        .modal-container.closing {
+            animation: slideUpFadeOut 0.4s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards;
+        }
+
+        @keyframes aggressiveSlideDown {
+            0% {
+                transform: translateY(-150%);
+                opacity: 0;
+            }
+            60% {
+                transform: translateY(15px);
+                opacity: 1;
+            }
+            80% {
+                transform: translateY(-8px);
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUpFadeOut {
+            0% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px);
+                opacity: 0;
+            }
+        }
+
+        /* Warning Icon with Aggressive Wiggle Animation */
+        .warning-icon-container {
+            width: 90px;
+            height: 90px;
+            margin: 0 auto 25px;
+            position: relative;
+        }
+
+        .warning-icon {
+            width: 100%;
+            height: 100%;
+            border: 4px solid #ffc107;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: aggressiveWiggle 0.8s ease-in-out infinite;
+        }
+
+        @keyframes aggressiveWiggle {
+            0%, 100% { transform: rotate(0deg); }
+            10% { transform: rotate(-15deg); }
+            20% { transform: rotate(15deg); }
+            30% { transform: rotate(-12deg); }
+            40% { transform: rotate(12deg); }
+            50% { transform: rotate(-8deg); }
+            60% { transform: rotate(8deg); }
+            70% { transform: rotate(-4deg); }
+            80% { transform: rotate(4deg); }
+            90% { transform: rotate(-2deg); }
+        }
+
+        .warning-icon span {
+            font-size: 45px;
+            font-weight: 700;
+            color: #ffc107;
+            line-height: 1;
+        }
+
+        .modal-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .modal-text {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .modal-btn {
+            padding: 12px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s ease;
+        }
+
+        .modal-btn-yes {
+            background-color: #16a34a;
+            color: #fff;
+        }
+
+        .modal-btn-yes:hover {
+            background-color: #15803d;
+            transform: scale(1.05);
+        }
+
+        .modal-btn-no {
+            background-color: #e5e7eb;
+            color: #374151;
+        }
+
+        .modal-btn-no:hover {
+            background-color: #d1d5db;
+            transform: scale(1.05);
+        }
+
+        .modal-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Single button modal style */
+        .modal-btn-ok {
+            background-color: #16a34a;
+            color: #fff;
+            padding: 12px 50px;
+        }
+
+        .modal-btn-ok:hover {
+            background-color: #15803d;
+            transform: scale(1.05);
+        }
+
+        /* Hidden state */
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Bank Icon -->
+    <div class="bank-icon-container">
+        <div class="bank-icon">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <path d="M 50 17 L 19 32 L 81 32 Z" fill="#ffffff" stroke="#ffffff" stroke-width="6" stroke-linejoin="round" />
+                <rect x="16" y="37" width="68" height="7" rx="3.5" fill="#ffffff" />
+                <rect x="20" y="46" width="9" height="24" rx="1" fill="#ffffff" />
+                <rect x="37" y="46" width="9" height="24" rx="1" fill="#ffffff" />
+                <rect x="54" y="46" width="9" height="24" rx="1" fill="#ffffff" />
+                <rect x="71" y="46" width="9" height="24" rx="1" fill="#ffffff" />
+                <rect x="16" y="72" width="68" height="7" rx="3.5" fill="#ffffff" />
+                <rect x="10" y="81" width="80" height="9" rx="4.5" fill="#ffffff" />
+            </svg>
+        </div>
+    </div>
+
+    <!-- Title -->
+    <h1 class="app-title">BankWallet App</h1>
+    <p class="pro-badge">PRO</p>
+
+    <!-- Description -->
+    <p class="description">
+        BankWallet lets you mine daily and withdraw your profits straight to your bank account. Simple, secure and easy to use.
+    </p>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+        <button class="action-btn" onclick="showDownloadModal()">Download APK</button>
+        <button class="action-btn" onclick="showServiceDownModal()">Use Telegram Bot</button>
+        <button class="action-btn" onclick="showServiceDownModal()">Join Telegram Channel</button>
+    </div>
+
+    <!-- Footer -->
+    <p class="footer">
+        © 2026 <strong>BankWallet Technologies</strong> — Mine. Earn. Withdraw.
+    </p>
+
+    <!-- Download Confirmation Modal -->
+    <div class="modal-overlay hidden" id="downloadModal">
+        <div class="modal-container" id="downloadModalContent">
+            <div class="warning-icon-container">
+                <div class="warning-icon">
+                    <span>?</span>
+                </div>
+            </div>
+            <h2 class="modal-title">Confirm Download</h2>
+            <p class="modal-text">Are you sure you want to download this app?</p>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-yes" onclick="confirmDownload()">Yes</button>
+                <button class="modal-btn modal-btn-no" onclick="closeDownloadModal()">No</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Service Down Modal -->
+    <div class="modal-overlay hidden" id="serviceModal">
+        <div class="modal-container" id="serviceModalContent">
+            <div class="warning-icon-container">
+                <div class="warning-icon">
+                    <span>!</span>
+                </div>
+            </div>
+            <h2 class="modal-title">Service Unavailable</h2>
+            <p class="modal-text">Services temporarily down. Please try again later.</p>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-ok" onclick="closeServiceModal()">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Show download confirmation modal
+        function showDownloadModal() {
+            document.getElementById('downloadModal').classList.remove('hidden');
+        }
+
+        // Close download modal
+        function closeDownloadModal() {
+            const modal = document.getElementById('downloadModal');
+            const modalContent = document.getElementById('downloadModalContent');
+            
+            modalContent.classList.add('closing');
+            
+            setTimeout(() => {
+                modal.style.animation = 'fadeOut 0.3s ease forwards';
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                    modal.style.animation = '';
+                    modalContent.classList.remove('closing');
+                }, 300);
+            }, 400);
+        }
+
+        // Confirm download and trigger file download
+        function confirmDownload() {
+            // Create a temporary link to download the APK
+            const link = document.createElement('a');
+            link.href = 'bankwallet.apk';
+            link.download = 'bankwallet.apk';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            closeDownloadModal();
+        }
+
+        // Show service down modal
+        function showServiceDownModal() {
+            document.getElementById('serviceModal').classList.remove('hidden');
+        }
+
+        // Close service down modal
+        function closeServiceModal() {
+            const modal = document.getElementById('serviceModal');
+            const modalContent = document.getElementById('serviceModalContent');
+            
+            modalContent.classList.add('closing');
+            
+            setTimeout(() => {
+                modal.style.animation = 'fadeOut 0.3s ease forwards';
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                    modal.style.animation = '';
+                    modalContent.classList.remove('closing');
+                }, 300);
+            }, 400);
+        }
+
+        // Close modals when clicking outside
+        document.getElementById('downloadModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeDownloadModal();
+            }
+        });
+
+        document.getElementById('serviceModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeServiceModal();
+            }
+        });
+    </script>
+</body>
+</html>
